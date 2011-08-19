@@ -5,8 +5,8 @@ license-file:         LICENSE
 author:               Mitsutoshi Aoe
 maintainer:           Mitsutoshi Aoe <maoe@foldr.in>
 copyright:            Copyright (C) 2011 Mitsutoshi Aoe
-synopsis:             A web-based visualizer for GHC Profiling Reports
-description:          A web-based visualizer for GHC Profiling Reports
+synopsis:             A web-based visualizer for GHC profiling reports
+description:          A web-based visualizer for GHC time and allocation profiling reports. It helps you find the performance bottlenecks of your code quickly.
 category:             Development
 stability:            Experimental
 cabal-version:        >= 1.6
