@@ -8,7 +8,7 @@ TKYProf is a web-based interactive visualizer for [GHC Time and Allocation Profi
 Prerequistes
 ------------------------
 
-* TKYProf uses some of HTML5 features, but does not support graceful downgrading. You need a modern browser supporting HTML5 and CSS3 for now.
+* TKYProf uses some of HTML5 features, but does not support graceful degradation. You need a modern browser supporting HTML5 and CSS3 for now.
 * TKYProf is written in Haskell. Haskell Platform and Cabal are required.
 
 How to use TKYProf
