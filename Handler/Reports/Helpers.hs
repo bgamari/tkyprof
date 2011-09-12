@@ -12,7 +12,7 @@ import Control.Monad.STM (STM, atomically)
 import Control.Monad.Trans (liftIO)
 import Model (Reports(..), ReportID, allReports, lookupReport, insertReport)
 import ProfilingReport (ProfilingReport)
-import TKYProf (Handler, TKYProf(getReports))
+import Foundation (Handler, TKYProf(getReports))
 import Yesod.Core (getYesod)
 import Yesod.Handler (notFound)
 

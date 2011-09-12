@@ -1,5 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies, OverloadedStrings #-}
-module TKYProf
+module Foundation
   ( TKYProf (..)
   , TKYProfRoute (..)
   , resourcesTKYProf
@@ -7,7 +7,7 @@ module TKYProf
   , Widget
   , module Yesod.Core
   , module Settings
-  , module StaticFiles
+  , module Settings.StaticFiles
   , module Model
   , module Control.Monad.STM
   , StaticRoute (..)
@@ -15,17 +15,20 @@ module TKYProf
   , liftIO
   ) where
 
+import Control.Applicative
 import Control.Monad (unless)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.STM (STM, atomically)
 import Control.Monad.Trans.Class (lift)
 import Model
 import Settings (hamletFile, luciusFile, juliusFile, widgetFile)
-import StaticFiles
+import Settings.StaticFiles
 import System.Directory
 import System.FilePath ((</>))
+import Web.ClientSession (getKey)
 import Yesod.Core
-import Yesod.Helpers.Static
+import Yesod.Logger (Logger, logLazyText)
+import Yesod.Static (Static, base64md5, StaticRoute(..))
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text as T
 import qualified Settings
@@ -35,17 +38,11 @@ import qualified Settings
 -- starts running, such as database connections. Every handler will have
 -- access to the data present here.
 data TKYProf = TKYProf
-  { getStatic  :: Static -- ^ Settings for static file serving.
+  { settings   :: Settings.AppConfig
+  , getLogger  :: Logger
+  , getStatic  :: Static
   , getReports :: Reports
   }
-
--- | A useful synonym; most of the handler functions in your application
--- will need to be of this type.
-type Handler = GHandler TKYProf TKYProf
-
--- | A useful synonym; most of the widgets functions in your application
--- will need to be of this type.
-type Widget = GWidget TKYProf TKYProf
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -71,22 +68,27 @@ mkYesodData "TKYProf" $(parseRoutesFile "config/routes")
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod TKYProf where
-  approot _ = Settings.approot
+  approot = Settings.appRoot . settings
+
+  encryptKey _ = Just <$> getKey "config/client_session_key.aes"
 
   defaultLayout widget = do
     mmsg <- getMessage
     (title, bcs) <- breadcrumbs
     pc <- widgetToPageContent $ do
-      addWidget $(Settings.widgetFile "header")                     
+      addWidget $(Settings.widgetFile "header")
       widget
       addLucius $(Settings.luciusFile "default-layout")
     hamletToRepHtml $(Settings.hamletFile "default-layout")
 
   -- This is done to provide an optimization for serving static files from
   -- a separate domain. Please see the staticroot setting in Settings.hs
-  urlRenderOverride a (StaticR s) =
-    Just $ uncurry (joinPath a Settings.staticroot) $ renderRoute s
+  urlRenderOverride y (StaticR s) =
+    Just $ uncurry (joinPath y (Settings.staticRoot $ settings y)) $ renderRoute s
   urlRenderOverride _ _ = Nothing
+
+  messageLogger y loc level msg =
+    formatLogMessage loc level msg >>= logLazyText (getLogger y)
 
   -- This function creates static content files in the static folder
   -- and names them based on a hash of their content. This allows
@@ -94,7 +96,7 @@ instance Yesod TKYProf where
   -- users receiving stale content.
   addStaticContent ext' _ content = do
     let fn = base64md5 content ++ '.' : T.unpack ext'
-    let statictmp = Settings.staticdir </> "tmp/"
+    let statictmp = Settings.staticDir </> "tmp/"
     liftIO $ createDirectoryIfMissing True statictmp
     let fn' = statictmp ++ fn
     exists <- liftIO $ doesFileExist fn'

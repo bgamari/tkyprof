@@ -1,7 +1,16 @@
-{-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies #-}
-module StaticFiles where
+{-# LANGUAGE CPP, QuasiQuotes, TemplateHaskell, TypeFamilies #-}
+module Settings.StaticFiles where
 
-import Yesod.Helpers.Static
+import Yesod.Static
+import qualified Yesod.Static as Static
+
+static :: FilePath -> IO Static
+static =
+#if PRODUCTION
+  Static.static
+#else
+  Static.staticDevel
+#endif
 
 -- | This generates easy references to files in the static directory at compile time.
 --   The upside to this is that you have compile-time verification that referenced files
