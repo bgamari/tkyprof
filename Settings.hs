@@ -43,13 +43,13 @@ data AppConfig = AppConfig
   , appRoot :: Text
   } deriving Show
 
-loadConfig :: AppEnvironment -> IO AppConfig
-loadConfig env = do
-  allSettings <- (join $ YAML.decodeFile ("config/settings.yml" :: String)) >>= fromMapping
+loadConfig :: FilePath -> AppEnvironment -> IO AppConfig
+loadConfig conf env = do
+  allSettings <- (join $ YAML.decodeFile conf) >>= fromMapping
   settings <- lookupMapping (show env) allSettings
   hostS <- lookupScalar "host" settings
   port <- fmap read $ lookupScalar "port" settings
-  return AppConfig { appEnv = env
+  return AppConfig { appEnv  = env
                    , appPort = port
                    , appRoot = pack $ hostS ++ appPort port
                    }

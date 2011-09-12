@@ -48,7 +48,7 @@ withDevelAppPort = toDyn go
   where
     go :: ((Int, Application) -> IO ()) -> IO ()
     go f = do
-      config <- Settings.loadConfig Settings.Development
+      config <- Settings.loadConfig "config/settings.yml" Settings.Development
       let port = appPort config
       logger <- makeLogger
       logString logger $ "Devel application launched, listening on port " ++ show port

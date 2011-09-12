@@ -24,10 +24,10 @@ main = do
   logger <- makeLogger
   args <- cmdArgs tkyConfig
   env <- getAppEnv args
-  config <- Settings.loadConfig env
+  conf <- Settings.loadConfig (config args) env
   let c = if port args /= 0
-            then config { appPort = port args }
-            else config
+            then conf { appPort = port args }
+            else conf
   hPutStrLn stderr $
     "TKYProf " ++ showVersion version ++
     " launched, listening on http://localhost:" ++ show (appPort c) ++ "/"
@@ -43,6 +43,7 @@ main = do
 data TKYConfig = TKYConfig
   { environment :: String
   , port        :: Port
+  , config      :: FilePath
   } deriving (Show, Data, Typeable)
 
 tkyConfig :: TKYConfig
@@ -52,6 +53,8 @@ tkyConfig = TKYConfig
       &= typ "ENVIRONMENT"
   , port = 3000
       &= typ "PORT"
+  , config = "config/settings.yml"
+      &= typFile
   } &= summary ("TKYProf " ++ showVersion version)
 
 environments :: [String]
