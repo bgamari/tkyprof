@@ -11,7 +11,7 @@ import Data.Maybe (listToMaybe)
 import Data.Text (Text)
 import Handler.Reports.Helpers (getAllReports, getProfilingReport, postProfilingReport)
 import ProfilingReport
-import TKYProf
+import Foundation
 import Yesod.Request
 import qualified Data.Aeson as A (encode)
 import qualified Data.Attoparsec as A

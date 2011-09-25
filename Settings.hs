@@ -1,6 +1,4 @@
-{-# LANGUAGE CPP #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes, CPP, TemplateHaskell, OverloadedStrings #-}
 -- | Settings are centralized, as much as possible, into this file. This
 -- includes database connection settings, static file locations, etc.
 -- In addition, you can configure a number of different aspects of Yesod
@@ -11,38 +9,61 @@ module Settings
   , juliusFile
   , luciusFile
   , widgetFile
-  , approot
-  , staticroot
-  , staticdir
+  , staticRoot
+  , staticDir
+  , loadConfig
+  , AppEnvironment(..)
+  , AppConfig(..)
   ) where
 
-import qualified Text.Hamlet as H
-import qualified Text.Julius as H
-import qualified Text.Lucius as H
+import Control.Monad (join)
+import Data.Monoid (mempty)
+import Data.Object
+import Data.Text (Text, pack)
 import Language.Haskell.TH.Syntax
-import Yesod.Widget (addWidget, addJulius, addLucius)
-import Data.Monoid (mempty, mappend)
 import System.Directory (doesFileExist)
-import Data.Text (Text)
+import Text.Shakespeare.Text (st)
+import Yesod.Widget (addWidget, addJulius, addLucius, whamletFile)
+import qualified Data.Object.Yaml as YAML
+import qualified Text.Hamlet as S
+import qualified Text.Julius as S
+import qualified Text.Lucius as S
+import qualified Text.Shakespeare.Text as S
 
--- | The base URL for your application. This will usually be different for
--- development and production. Yesod automatically constructs URLs for you,
--- so this value must be accurate to create valid links.
-approot :: Text
+data AppEnvironment
+  = Test
+  | Development
+  | Staging
+  | Production
+  deriving (Eq, Show, Read, Enum, Bounded)
+
+data AppConfig = AppConfig
+  { appEnv :: AppEnvironment
+  , appPort :: Int
+  , appRoot :: Text
+  } deriving Show
+
+loadConfig :: FilePath -> AppEnvironment -> IO AppConfig
+loadConfig conf env = do
+  allSettings <- (join $ YAML.decodeFile conf) >>= fromMapping
+  settings <- lookupMapping (show env) allSettings
+  hostS <- lookupScalar "host" settings
+  port <- fmap read $ lookupScalar "port" settings
+  return AppConfig { appEnv  = env
+                   , appPort = port
+                   , appRoot = pack $ hostS ++ appPort port
+                   }
+    where appPort :: Int -> String
 #ifdef PRODUCTION
--- You probably want to change this. If your domain name was "yesod.com",
--- you would probably want it to be:
--- > approot = "http://www.yesod.com"
--- Please note that there is no trailing slash.
-approot = "http://localhost:3000"
+          appPort _ = ""
 #else
-approot = "http://localhost:3000"
+          appPort p = ":" ++ show p
 #endif
 
 -- | The location of static files on your system. This is a file system
 -- path. The default value works properly with your scaffolded site.
-staticdir :: FilePath
-staticdir = "static"
+staticDir :: FilePath
+staticDir = "static"
 
 -- | The base URL for your static files. As you can see by the default
 -- value, this can simply be "static" appended to your application root.
@@ -57,8 +78,8 @@ staticdir = "static"
 -- have to make a corresponding change here.
 --
 -- To see how this value is used, see urlRenderOverride in tkyprof.hs
-staticroot :: Text
-staticroot = approot `mappend` "/static"
+staticRoot :: AppConfig -> Text
+staticRoot conf = [st|#{appRoot conf}/static|]
 
 -- The rest of this file contains settings which rarely need changing by a
 -- user.
@@ -76,35 +97,43 @@ staticroot = approot `mappend` "/static"
 -- used; to get the same auto-loading effect, it is recommended that you
 -- use the devel server.
 
-toHamletFile, toJuliusFile, toLuciusFile :: String -> FilePath
-toHamletFile x = "hamlet/" ++ x ++ ".hamlet"
-toJuliusFile x = "julius/" ++ x ++ ".julius"
-toLuciusFile x = "lucius/" ++ x ++ ".lucius"
+globFile :: String -> String -> FilePath
+globFile kind x = kind ++ "/" ++ x ++ "." ++ kind
 
 hamletFile :: FilePath -> Q Exp
-hamletFile = H.hamletFile . toHamletFile
+hamletFile = S.hamletFile . globFile "hamlet"
 
 luciusFile :: FilePath -> Q Exp
+luciusFile =
 #ifdef PRODUCTION
-luciusFile = H.luciusFile . toLuciusFile
+  S.luciusFile . globFile "lucius"
 #else
-luciusFile = H.luciusFileDebug . toLuciusFile
+  S.luciusFileDebug . globFile "lucius"
 #endif
 
 juliusFile :: FilePath -> Q Exp
+juliusFile =
 #ifdef PRODUCTION
-juliusFile = H.juliusFile . toJuliusFile
+  S.juliusFile . globFile "julius"
 #else
-juliusFile = H.juliusFileDebug . toJuliusFile
+  S.juliusFileDebug . globFile "julius"
+#endif
+
+textFile :: FilePath -> Q Exp
+textFile =
+#ifdef PRODUCTION
+  S.textFile . globFile "text"
+#else
+  S.textFileDebug . globFile "text"
 #endif
 
 widgetFile :: FilePath -> Q Exp
 widgetFile x = do
-  let h = unlessExists toHamletFile hamletFile
-  let j = unlessExists toJuliusFile juliusFile
-  let l = unlessExists toLuciusFile luciusFile
+  let h = whenExists (globFile "hamlet") (whamletFile . globFile "hamlet")
+  let j = whenExists (globFile "julius")  juliusFile
+  let l = whenExists (globFile "lucius") luciusFile
   [|addWidget $h >> addJulius $j >> addLucius $l|]
   where
-    unlessExists tofn f = do
+    whenExists tofn f = do
       e <- qRunIO $ doesFileExist $ tofn x
       if e then f x else [|mempty|]

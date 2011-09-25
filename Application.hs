@@ -1,16 +1,17 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
+{-# LANGUAGE CPP, TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Controller
+module Application
   ( withTKYProf
-  , withDevelApp
+  , withDevelAppPort
   ) where
 
 import Data.ByteString (ByteString)
 import Data.Dynamic (Dynamic, toDyn)
 import Network.Wai (Application)
+import Network.Wai.Middleware.Debug (debugHandle)
 import Settings
-import TKYProf
-import Yesod.Helpers.Static
+import Foundation
+import Yesod.Logger (makeLogger, flushLogger, Logger, logLazyText, logString)
 -- Import all relevant handler modules here.
 import Handler.Home
 import Handler.Reports
@@ -32,14 +33,26 @@ getRobotsR = return $ RepPlain $ toContent ("User-agent: *" :: ByteString)
 -- performs initialization and creates a WAI application. This is also the
 -- place to put your migrate statements to have automatic database
 -- migrations handled by Yesod.
-withTKYProf :: (Application -> IO a) -> IO a
-withTKYProf f = do
+withTKYProf :: AppConfig -> Logger -> (Application -> IO a) -> IO a
+withTKYProf config logger f = do
   rs <- atomically $ emptyReports
-  let h = TKYProf { getStatic  = s
+  s <- static Settings.staticDir
+  let h = TKYProf { settings   = config
+                  , getLogger  = logger
+                  , getStatic  = s
                   , getReports = rs }
   toWaiApp h >>= f
-  where
-    s = static Settings.staticdir
 
-withDevelApp :: Dynamic
-withDevelApp = toDyn (withTKYProf :: (Application -> IO ()) -> IO ())
+withDevelAppPort :: Dynamic
+withDevelAppPort = toDyn go
+  where
+    go :: ((Int, Application) -> IO ()) -> IO ()
+    go f = do
+      config <- Settings.loadConfig "config/settings.yml" Settings.Development
+      let port = appPort config
+      logger <- makeLogger
+      logString logger $ "Devel application launched, listening on port " ++ show port
+      withTKYProf config logger $ \app -> f (port, debugHandle (logHandle logger) app)
+      flushLogger logger
+      where
+        logHandle logger msg = logLazyText logger msg >> flushLogger logger
