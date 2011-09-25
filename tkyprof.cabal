@@ -42,6 +42,9 @@ flag devel
   default:            False
 
 library
+  if flag(devel)
+    ghc-options:      -Wall -threaded
+
   exposed-modules:    Application
                       Settings
 
