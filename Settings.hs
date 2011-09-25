@@ -130,7 +130,7 @@ textFile =
 widgetFile :: FilePath -> Q Exp
 widgetFile x = do
   let h = whenExists (globFile "hamlet") (whamletFile . globFile "hamlet")
-  let j = whenExists (globFile "julus")  juliusFile
+  let j = whenExists (globFile "julius")  juliusFile
   let l = whenExists (globFile "lucius") luciusFile
   [|addWidget $h >> addJulius $j >> addLucius $l|]
   where
