@@ -50,7 +50,8 @@ instance Yesod TKYProf where
     mmsg <- getMessage
     (title, bcs) <- breadcrumbs
     pc <- widgetToPageContent $ do
-      $(widgetFile "normalize")
+      -- $(widgetFile "normalize")
+      $(widgetFile "header")
       $(widgetFile "default-layout")
     hamletToRepHtml $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -67,7 +68,7 @@ instance Yesod TKYProf where
                              Settings.staticDir
                              (StaticR . flip StaticRoute [])
 
-  yepnopeJs _ = Just $ Right $ StaticR js_modernizr_js
+  yepnopeJs _ = Nothing
 
 instance YesodBreadcrumbs TKYProf where
   breadcrumb HomeR                   = return ("Home", Nothing)

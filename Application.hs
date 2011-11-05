@@ -9,7 +9,7 @@ import Data.Dynamic (Dynamic, toDyn)
 import Foundation
 import Network.Wai (Application)
 import Yesod.Default.Config (DefaultEnv)
-import Yesod.Default.Handlers (getFaviconR, getRobotsR)
+import Yesod.Default.Handlers (getRobotsR)
 import Yesod.Default.Main (defaultDevelApp, defaultRunner)
 import Yesod.Logger (Logger)
 import qualified Settings as S
@@ -19,6 +19,10 @@ import Handler.Home
 import Handler.Reports
 
 mkYesodDispatch "TKYProf" resourcesTKYProf
+
+-- A Favicon handler for a PNG image
+getFaviconR :: Handler ()
+getFaviconR = sendFile "image/png" "config/favicon.png"
 
 withTKYProf :: AppConfig DefaultEnv -> Logger -> (Application -> IO ()) -> IO ()
 withTKYProf config logger f = do
