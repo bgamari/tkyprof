@@ -5,16 +5,14 @@ module Application
   , withDevelAppPort
   ) where
 
-import Data.ByteString (ByteString)
 import Data.Dynamic (Dynamic, toDyn)
-import Network.Wai (Application)
-import Network.Wai.Middleware.Debug (debugHandle)
-import qualified Settings as S
 import Foundation
-import Yesod.Logger (makeLogger, flushLogger, Logger, logLazyText, logString)
-import Yesod.Default.Handlers (getFaviconR, getRobotsR)
+import Network.Wai (Application)
 import Yesod.Default.Config (DefaultEnv)
+import Yesod.Default.Handlers (getFaviconR, getRobotsR)
 import Yesod.Default.Main (defaultDevelApp, defaultRunner)
+import Yesod.Logger (Logger)
+import qualified Settings as S
 
 -- Import all relevant handler modules here.
 import Handler.Home

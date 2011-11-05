@@ -16,25 +16,21 @@ module Foundation
   ) where
 
 import Control.Applicative
-import Control.Monad (unless)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.STM (STM, atomically)
 import Control.Monad.Trans.Class (lift)
 import Model
 import Settings (widgetFile)
 import Settings.StaticFiles
-import System.Directory
-import System.FilePath ((</>))
+import Text.Hamlet (hamletFile)
 import Web.ClientSession (getKey)
 import Yesod.Core
+import Yesod.Default.Config (DefaultEnv)
+import Yesod.Default.Util (addStaticContentExternal)
 import Yesod.Logger (Logger, logLazyText)
 import Yesod.Static (Static, base64md5, StaticRoute(..))
-import qualified Data.ByteString.Lazy as L
 import qualified Data.Text as T
 import qualified Settings
-import Yesod.Default.Config (DefaultEnv)
-import Text.Hamlet (hamletFile)
-import Yesod.Default.Util (addStaticContentExternal)
 
 data TKYProf = TKYProf
   { settings   :: AppConfig DefaultEnv
