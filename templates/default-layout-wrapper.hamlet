@@ -1,0 +1,11 @@
+!!!
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" type=image/png href=@{FaviconR}>
+    <link href="http://fonts.googleapis.com/css?family=Amaranth:400,700" rel="stylesheet" type="text/css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js">
+    <title>#{pageTitle pc}
+    ^{pageHead pc}
+  <body>
+    ^{pageBody pc}
