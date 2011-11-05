@@ -4,7 +4,7 @@ license:              BSD3
 license-file:         LICENSE
 author:               Mitsutoshi Aoe
 maintainer:           Mitsutoshi Aoe <maoe@foldr.in>
-copyright:            Copyright (C) 2011 Mitsutoshi Aoe
+copyright:            Copyright (c) 2011 Mitsutoshi Aoe
 synopsis:             A web-based visualizer for GHC profiling reports
 description:          A web-based visualizer for GHC time and allocation profiling reports. It helps you find the performance bottlenecks of your code quickly.
 category:             Development
@@ -71,7 +71,7 @@ library
                     , directory < 2
                     , enumerator >= 0.4 && < 0.5
                     , filepath >= 1.1 && < 2
-                    , hamlet >= 0.10 && < 0.11
+                    , hamlet >= 0.10.4 && < 0.11
                     , mtl >= 1.1 && < 3
                     , rosezipper >= 0.2 && < 0.3
                     , shakespeare-css >= 0.10 && < 0.11
@@ -83,14 +83,14 @@ library
                     , time >= 1.2 && < 1.3
                     , transformers >= 0.2 && < 0.3
                     , vector >= 0.6 && < 1
-                    , wai >= 0.4 && < 0.5
+                    , wai >= 0.4.2 && < 0.5
                     , wai-extra >= 0.4 && < 0.5
                     , web-routes >= 0.23 && < 0.26
                     , yesod-core >= 0.9.1.1 && < 0.10
+                    , yesod-default >= 0.4 && < 0.5
                     , yesod-form >= 0.3 && < 0.4
                     , yesod-json >= 0.2 && < 0.3
                     , yesod-static >= 0.3 && < 0.4
-
 
 executable tkyprof-server
   if flag(production)
@@ -105,8 +105,9 @@ executable tkyprof-server
                     , base >= 4 && < 5
                     , yesod-core >= 0.9.1.1 && < 0.10
                     , directory
-                    , cmdargs >= 0.7 && < 0.8
+                    , cmdargs >= 0.7 && < 0.9
                     , warp >= 0.4 && < 0.5
+                    , yesod-default >= 0.4 && < 0.5
 
 executable prof2json
   buildable:          False

@@ -7,3 +7,6 @@
 [submodule "modules/jquery-ui"]
 	path = modules/jquery-ui
 	url = https://github.com/jquery/jquery-ui.git
+[submodule "modules/Modernizr"]
+	path = modules/Modernizr
+	url = https://github.com/Modernizr/Modernizr.git
