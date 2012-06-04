@@ -18,6 +18,7 @@ import qualified Data.Attoparsec as A
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text.Lazy.Encoding as T (decodeUtf8)
+import Network.HTTP.Types (seeOther303)
 
 getReportsR :: Handler RepHtml
 getReportsR = do
@@ -36,7 +37,7 @@ postReportsR = do
                      sendResponseCreated ReportsR
 
 getReportsIdR :: ReportID -> Handler RepHtml
-getReportsIdR reportId = redirect RedirectSeeOther (ReportsIdTimeR reportId [])
+getReportsIdR reportId = redirectWith seeOther303 (ReportsIdTimeR reportId [])
 
 getReportsIdTimeR :: ReportID -> [a] -> Handler RepHtml
 getReportsIdTimeR reportId _ = getReportsIdCommon reportId "time"

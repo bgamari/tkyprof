@@ -24,19 +24,19 @@ module ProfilingReport
   , module Data.Tree
   ) where
 
-import Control.Applicative hiding (many)
+import Control.Applicative
 import Data.Aeson
 import Data.Attoparsec.Char8 as A8
-import Data.Attoparsec.Enumerator (iterParser)
+import Data.Conduit.Attoparsec (sinkParser)
 import Data.ByteString (ByteString)
-import Data.Enumerator (Iteratee)
+import Data.Conduit (MonadThrow, Sink)
 import Data.Foldable (foldl')
 import Data.Time (UTCTime(..), TimeOfDay(..), timeOfDayToTime, fromGregorian)
 import Data.Tree (Tree(..), Forest)
 import Data.Tree.Zipper (TreePos, Full)
 import Prelude hiding (takeWhile)
 import qualified Data.Attoparsec as A
-import qualified Data.Map as M
+import qualified Data.HashMap.Lazy as HM
 import qualified Data.Tree.Zipper as Z
 import qualified Data.Vector as V
 import Data.Text (Text)
@@ -83,8 +83,8 @@ data CostCentre = CostCentre
   , inheritedAlloc    :: Double
   } deriving Show
 
-profilingReportI :: Monad m => Iteratee ByteString m ProfilingReport
-profilingReportI = iterParser profilingReport
+profilingReportI :: MonadThrow m => Sink ByteString m ProfilingReport
+profilingReportI = sinkParser profilingReport
 
 profilingReport :: Parser ProfilingReport
 profilingReport = spaces >>
@@ -254,8 +254,8 @@ instance ToJSON (Tree CostCentre) where
     | null subForest = cc'
     | otherwise      = branch
     where
-      branch = Object $ M.insert "subForest" subForestWithParent unwrappedCC
-      parent = Object $ M.insert "isParent" (toJSON True) unwrappedCC
+      branch = Object $ HM.insert "subForest" subForestWithParent unwrappedCC
+      parent = Object $ HM.insert "isParent" (toJSON True) unwrappedCC
       subForestWithParent = Array $ V.fromList $ parent:map toJSON subForest
       cc'@(Object unwrappedCC) = toJSON cc
 

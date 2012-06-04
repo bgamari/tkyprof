@@ -1,7 +1,7 @@
 {-# LANGUAGE CPP, QuasiQuotes, TemplateHaskell, TypeFamilies #-}
 module Settings.StaticFiles where
 
-import Yesod.Static (staticFiles, StaticRoute (StaticRoute))
+import Yesod.Static
 import qualified Yesod.Static as Static
 
 static :: FilePath -> IO Static.Static

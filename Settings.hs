@@ -8,19 +8,18 @@ module Settings
 import Data.Text (Text)
 import Language.Haskell.TH.Syntax
 import Text.Shakespeare.Text (st)
-import Yesod.Default.Config (AppConfig, DefaultEnv)
-import Yesod.Default.Util (widgetFileProduction, widgetFileDebug)
-import Yesod.Config (appRoot)
+import Yesod.Default.Config (AppConfig(..), DefaultEnv)
+import Yesod.Default.Util (widgetFileNoReload, widgetFileReload)
 
 staticDir :: FilePath
 staticDir = "static"
 
-staticRoot :: AppConfig DefaultEnv -> Text
+staticRoot :: AppConfig DefaultEnv extra -> Text
 staticRoot conf = [st|#{appRoot conf}/static|]
 
 widgetFile :: String -> Q Exp
 #if PRODUCTION
-widgetFile = widgetFileProduction
+widgetFile = widgetFileNoReload
 #else
-widgetFile = widgetFileDebug
+widgetFile = widgetFileReload
 #endif

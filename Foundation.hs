@@ -1,7 +1,7 @@
 {-# LANGUAGE QuasiQuotes, TemplateHaskell, TypeFamilies, OverloadedStrings #-}
 module Foundation
   ( TKYProf (..)
-  , TKYProfRoute (..)
+  , Route (..)
   , resourcesTKYProf
   , Handler
   , Widget
@@ -10,30 +10,26 @@ module Foundation
   , module Settings.StaticFiles
   , module Model
   , module Control.Monad.STM
-  , StaticRoute (..)
-  , lift
   , liftIO
   ) where
 
-import Control.Applicative
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.STM (STM, atomically)
-import Control.Monad.Trans.Class (lift)
 import Model
 import Settings (widgetFile)
 import Settings.StaticFiles
 import Text.Hamlet (hamletFile)
-import Web.ClientSession (getKey)
 import Yesod.Core
-import Yesod.Default.Config (DefaultEnv)
+import Yesod.Default.Config (AppConfig(..), DefaultEnv)
 import Yesod.Default.Util (addStaticContentExternal)
 import Yesod.Logger (Logger, logLazyText)
-import Yesod.Static (Static, base64md5, StaticRoute(..))
+import Yesod.Static
 import qualified Data.Text as T
 import qualified Settings
+import Text.Jasmine (minifym)
 
 data TKYProf = TKYProf
-  { settings   :: AppConfig DefaultEnv
+  { settings   :: AppConfig DefaultEnv ()
   , getLogger  :: Logger
   , getStatic  :: Static
   , getReports :: Reports
@@ -42,9 +38,7 @@ data TKYProf = TKYProf
 mkYesodData "TKYProf" $(parseRoutesFile "config/routes")
 
 instance Yesod TKYProf where
-  approot = appRoot . settings
-
-  encryptKey _ = Just <$> getKey "config/client_session_key.aes"
+  approot = ApprootMaster $ appRoot . settings
 
   defaultLayout widget = do
     mmsg <- getMessage
@@ -63,12 +57,10 @@ instance Yesod TKYProf where
     formatLogMessage loc level msg >>= logLazyText (getLogger y)
 
   addStaticContent =
-    addStaticContentExternal (const $ Left ())
-                             base64md5
-                             Settings.staticDir
-                             (StaticR . flip StaticRoute [])
+    addStaticContentExternal minifym base64md5 Settings.staticDir (StaticR . flip StaticRoute [])
 
-  yepnopeJs _ = Nothing
+  jsLoader _ = BottomOfBody
+
 
 instance YesodBreadcrumbs TKYProf where
   breadcrumb HomeR                   = return ("Home", Nothing)
