@@ -15,6 +15,7 @@ module Foundation
 
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.STM (STM, atomically)
+import Data.Monoid ((<>))
 import Model
 import Settings (widgetFile)
 import Settings.StaticFiles
@@ -63,8 +64,9 @@ instance Yesod TKYProf where
 
 
 instance YesodBreadcrumbs TKYProf where
-  breadcrumb HomeR                   = return ("Home", Nothing)
-  breadcrumb ReportsR                = return ("Reports", Just HomeR)
-  breadcrumb (ReportsIdTimeR rid _)  = return ("Report #" `T.append` T.pack (show rid), Just ReportsR)
-  breadcrumb (ReportsIdAllocR rid _) = return ("Report #" `T.append` T.pack (show rid), Just ReportsR)
-  breadcrumb _                       = return ("Not found", Just HomeR)
+  breadcrumb route = return $ case route of
+    HomeR                 -> ("Home", Nothing)
+    ReportsR              -> ("Reports", Just HomeR)
+    ReportsIdTimeR rid _  -> ("Report #" <> T.pack (show rid), Just ReportsR)
+    ReportsIdAllocR rid _ -> ("Report #" <> T.pack (show rid), Just ReportsR)
+    _                     -> ("Not found", Just HomeR)
