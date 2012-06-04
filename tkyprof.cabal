@@ -48,7 +48,7 @@ library
   exposed-modules:    Application
                       Settings
 
-  hs-source-dirs:     .
+  hs-source-dirs:     src
   other-modules:      Foundation
                       Handler.Home
                       Handler.Reports
