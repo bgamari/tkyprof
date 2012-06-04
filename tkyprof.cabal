@@ -87,14 +87,14 @@ library
                     , yesod-platform == 1.0.4.1
                     , yesod-static
 
-executable tkyprof-server
+executable tkyprof
   if flag(production)
     ghc-options:      -Wall -O2 -threaded
     cpp-options:      -DPRODUCTION
   else
     ghc-options:      -Wall -threaded
 
-  main-is:            tkyprof-server.hs
+  main-is:            tkyprof.hs
   hs-source-dirs:     bin
   build-depends:      base
                     , tkyprof
