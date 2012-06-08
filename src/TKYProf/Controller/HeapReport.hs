@@ -1,15 +1,14 @@
 module TKYProf.Controller.HeapReport where
 import Yesod.Content
-import Yesod.Core
 
+import TKYProf.Controller.Internal
 import TKYProf.Model
 
-postHeapReportsR :: ProjectId -> GHandler master sub RepJson
+postHeapReportsR :: ProjectId -> Handler RepJson
 postHeapReportsR = undefined
 
-getHeapReportIdR :: ProjectId -> HeapReportId -> GHandler master sub RepJson
+getHeapReportIdR :: ProjectId -> HeapReportId -> Handler RepJson
 getHeapReportIdR = undefined
 
-deleteHeapReportIdR :: ProjectId -> HeapReportId -> GHandler master sub RepJson
+deleteHeapReportIdR :: ProjectId -> HeapReportId -> Handler RepJson
 deleteHeapReportIdR = undefined
-

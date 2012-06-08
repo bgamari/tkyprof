@@ -1,6 +1,5 @@
 module TKYProf.Controller.Project where
 import Yesod.Content
-import Yesod.Core
 import Yesod.Json (jsonToRepJson)
 import Yesod.Persist (runDB)
 
@@ -12,11 +11,11 @@ getProjectsR = do
   projects <- runDB $ selectList [] []
   jsonToRepJson (projects :: [Entity Project])
 
-postProjectsR :: GHandler master sub RepJson
+postProjectsR :: Handler RepJson
 postProjectsR = undefined
 
-getProjectIdR :: ProjectId -> GHandler master sub RepJson
+getProjectIdR :: ProjectId -> Handler RepJson
 getProjectIdR = undefined
 
-deleteProjectIdR :: ProjectId -> GHandler master sub RepJson
+deleteProjectIdR :: ProjectId -> Handler RepJson
 deleteProjectIdR = undefined

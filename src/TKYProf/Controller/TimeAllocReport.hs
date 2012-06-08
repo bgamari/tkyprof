@@ -1,14 +1,14 @@
 module TKYProf.Controller.TimeAllocReport where
 import Yesod.Content
-import Yesod.Core
 
+import TKYProf.Controller.Internal
 import TKYProf.Model
 
-postTimeAllocReportsR :: ProjectId -> GHandler master sub RepJson
+postTimeAllocReportsR :: ProjectId -> Handler RepJson
 postTimeAllocReportsR = undefined
 
-getTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> GHandler master sub RepJson
+getTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> Handler RepJson
 getTimeAllocReportIdR = undefined
 
-deleteTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> GHandler master sub RepJson
+deleteTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> Handler RepJson
 deleteTimeAllocReportIdR = undefined
