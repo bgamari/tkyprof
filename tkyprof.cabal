@@ -63,6 +63,7 @@ library
                       TKYProf.Model.HeapReport
                       TKYProf.Model.EventReport
                       TKYProf.Controller
+                      TKYProf.Controller.Internal
                       TKYProf.Controller.Home
                       TKYProf.Controller.Project
                       TKYProf.Controller.TimeAllocReport
