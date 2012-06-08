@@ -1,0 +1,13 @@
+/static      StaticR Static tkyStatic
+/favicon.png FaviconR GET
+/robots.txt  RobotsR GET
+
+/                                            HomeR              GET
+/projects                                    ProjectsR          GET POST
+/projects/#ProjectId                         ProjectIdR         GET DELETE
+/projects/#ProjectId/time                    TimeAllocReportsR  POST
+/projects/#ProjectId/time/#TimeAllocReportId TimeAllocReportIdR GET DELETE
+/projects/#ProjectId/heap                    HeapReportsR       POST
+/projects/#ProjectId/heap/#HeapReportId      HeapReportIdR      GET DELETE
+/projects/#ProjectId/event                   EventReportsR      POST
+/projects/#ProjectId/event/#EventReportId    EventReportIdR     GET DELETE

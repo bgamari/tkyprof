@@ -42,8 +42,7 @@ flag devel
   default:            False
 
 library
-  if flag(devel)
-    ghc-options:      -Wall -threaded
+  ghc-options:        -Wall -threaded
 
   exposed-modules:    Application
                       Settings
@@ -58,6 +57,17 @@ library
                       ProfilingReport
                       Settings.StaticFiles
                       Paths_tkyprof
+                      TKYProf.Model.Internal
+                      TKYProf.Model.Project
+                      TKYProf.Model.TimeAllocReport
+                      TKYProf.Model.HeapReport
+                      TKYProf.Model.EventReport
+                      TKYProf.Controller
+                      TKYProf.Controller.Home
+                      TKYProf.Controller.Project
+                      TKYProf.Controller.TimeAllocReport
+                      TKYProf.Controller.HeapReport
+                      TKYProf.Controller.EventReport
 
   build-depends:      base >= 4 && < 5
                     , aeson
@@ -71,6 +81,8 @@ library
                     , hjsmin
                     , http-types
                     , mtl
+                    , persistent
+                    , persistent-template
                     , rosezipper
                     , shakespeare-text
                     , stm
@@ -84,6 +96,8 @@ library
                     , yesod-core
                     , yesod-default
                     , yesod-form
+                    , yesod-json
+                    , yesod-persistent
                     , yesod-platform == 1.0.4.1
                     , yesod-static
 

@@ -1,0 +1,21 @@
+Project sql=projects json
+  name      Text
+  createdAt UTCTime
+
+TimeAllocReport sql=time_alloc_reports json
+  projectId   ProjectId
+  commandLine Text
+  rawData     ByteString
+  createdAt   UTCTime
+
+HeapReport sql=heap_reports json
+  projectId   ProjectId
+  commandLine Text
+  rawData     ByteString
+  createdAt   UTCTime
+
+EventReport sql=event_reports json
+  projectId   ProjectId
+  commandLine Text
+  rawData     ByteString
+  createdAt   UTCTime
