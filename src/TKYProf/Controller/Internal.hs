@@ -7,14 +7,22 @@ import Control.Applicative ((<$>), (<*>))
 import Data.Char (toLower)
 import Data.List (stripPrefix)
 import Data.Maybe (fromMaybe)
+import Data.Monoid ((<>))
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Encoding.Error as TEE
 
+import Data.Aeson ((.=))
+import qualified Data.Aeson as A
 import qualified Data.Attoparsec.Text as AT
 import Database.Persist.GenericSql (ConnectionPool, SqlPersist, runSqlPool)
+import qualified Network.Wai as W
 import Text.Hamlet (hamletFile)
 import Text.Jasmine (minifym)
 import Yesod.Core
 import Yesod.Default.Config (AppConfig(..), DefaultEnv)
 import Yesod.Default.Util (addStaticContentExternal)
+import Yesod.Json (jsonToRepJson)
 import Yesod.Logger (Logger, logLazyText)
 import Yesod.Persist
 import Yesod.Static (Static, Route(StaticRoute), base64md5)
@@ -35,7 +43,30 @@ data TKYProf = TKYProf
 mkYesodData "TKYProf" $(parseRoutesFile "config/routes2")
 
 instance Yesod TKYProf where
-  approot = ApprootMaster $ appRoot . tkyConfig
+  approot = ApprootRelative
+
+  -- | errorHandler supports JSON format as well as HTML format
+  errorHandler errResp = do
+    htmlChooseRep <- defaultErrorHandler errResp
+    RepJson jsonContent <- genJsonContent
+    return $ \contentTypes -> do
+      (_, htmlContent) <- htmlChooseRep contentTypes
+      chooseRep (RepHtmlJson htmlContent jsonContent) contentTypes
+    where
+      genJsonContent = case errResp of
+        NotFound -> do
+          -- Copied from Yesod.Core
+          r <- waiRequest
+          let path = TE.decodeUtf8With TEE.lenientDecode $ W.rawPathInfo r
+          jsonToRepJson $ A.object [ "message" .= A.toJSON ("Path " <> path <> " is not found.")]
+        PermissionDenied mesg -> do
+          jsonToRepJson $ A.object ["message" .= mesg]
+        InvalidArgs args -> do
+          jsonToRepJson $ A.object ["message" .= T.intercalate "," args]
+        InternalError err -> do
+          jsonToRepJson $ A.object ["message" .= err]
+        BadMethod method -> do
+          jsonToRepJson $ A.object ["message" .= A.toJSON ("Method " <> method <> " is not supported.")]
 
   defaultLayout widget = do
     mmsg <- getMessage
