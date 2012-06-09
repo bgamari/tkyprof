@@ -3,6 +3,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 module TKYProf.Controller.Internal where
+import Control.Applicative ((<$>))
+import Data.Maybe (fromMaybe)
+
+import qualified Data.Attoparsec.Text as AT
 import Database.Persist.GenericSql (ConnectionPool, SqlPersist, runSqlPool)
 import Text.Hamlet (hamletFile)
 import Text.Jasmine (minifym)
@@ -62,3 +66,16 @@ instance YesodPersist TKYProf where
     tkyprof <- getYesod
     runSqlPool act $ tkyConnPool tkyprof
 
+pagenator
+  :: Int
+  -> Int
+  -> (([SelectOpt v] -> [SelectOpt v]) -> GHandler master sub a)
+  -> GHandler master sub a
+pagenator defOffset defLimit f = do
+  offset <- fromMaybe defOffset . (>>= parseInt) <$> lookupGetParam "offset"
+  limit <- fromMaybe defLimit . (>>= parseInt) <$> lookupGetParam "limit"
+  f ([OffsetBy offset, LimitTo limit] ++)
+  where
+    parseInt :: Text -> Maybe Int
+    parseInt = either (const Nothing) Just
+             . AT.parseOnly AT.decimal
