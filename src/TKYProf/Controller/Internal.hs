@@ -2,8 +2,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module TKYProf.Controller.Internal where
 import Control.Applicative ((<$>), (<*>))
+import Control.Monad.Trans (MonadIO(..))
 import Data.Char (toLower)
 import Data.List (stripPrefix)
 import Data.Maybe (fromMaybe)
@@ -12,6 +14,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TEE
 
+import Control.Exception.Lifted (SomeException, try, throwIO)
 import Data.Aeson ((.=))
 import qualified Data.Aeson as A
 import qualified Data.Attoparsec.Text as AT
@@ -100,7 +103,12 @@ instance YesodPersist TKYProf where
   type YesodPersistBackend TKYProf = SqlPersist
   runDB act = do
     tkyprof <- getYesod
-    runSqlPool act $ tkyConnPool tkyprof
+    r <- try $ runSqlPool act $ tkyConnPool tkyprof
+    case r of
+      Left (e :: SomeException) -> do
+        liftIO $ print e
+        throwIO e
+      Right x -> return x
 
 pagenator
   :: Int
