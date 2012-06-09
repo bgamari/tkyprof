@@ -58,7 +58,8 @@ instance Yesod TKYProf where
           -- Copied from Yesod.Core
           r <- waiRequest
           let path = TE.decodeUtf8With TEE.lenientDecode $ W.rawPathInfo r
-          jsonToRepJson $ A.object ["message" .= A.toJSON ("Path " <> path <> " is not found.")]
+          jsonToRepJson $ A.object
+            ["message" .= A.toJSON ("Path " <> path <> " is not found.")]
         PermissionDenied mesg -> do
           jsonToRepJson $ A.object ["message" .= mesg]
         InvalidArgs args -> do
@@ -66,7 +67,8 @@ instance Yesod TKYProf where
         InternalError err -> do
           jsonToRepJson $ A.object ["message" .= err]
         BadMethod method -> do
-          jsonToRepJson $ A.object ["message" .= A.toJSON ("Method " <> method <> " is not supported.")]
+          jsonToRepJson $ A.object
+            ["message" .= A.toJSON ("Method " <> method <> " is not supported.")]
 
   defaultLayout widget = do
     mmsg <- getMessage
@@ -85,13 +87,14 @@ instance Yesod TKYProf where
     formatLogMessage loc level msg >>= logLazyText (tkyLogger y)
 
   addStaticContent =
-    addStaticContentExternal minifym base64md5 Settings.staticDir (StaticR . flip StaticRoute [])
+    addStaticContentExternal minifym base64md5 Settings.staticDir
+      (StaticR . flip StaticRoute [])
 
   jsLoader _ = BottomOfBody
 
 instance YesodBreadcrumbs TKYProf where
   breadcrumb route = return $ case route of
-    _                     -> ("Not found", Just HomeR)
+    _ -> ("Not found", Just HomeR)
 
 instance YesodPersist TKYProf where
   type YesodPersistBackend TKYProf = SqlPersist
