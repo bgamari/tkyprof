@@ -46,6 +46,7 @@ library
 
   exposed-modules:    Application
                       Settings
+                      TKYProf.Application
 
   hs-source-dirs:     src
   other-modules:      Foundation
@@ -83,6 +84,7 @@ library
                     , http-types
                     , mtl
                     , persistent
+                    , persistent-sqlite
                     , persistent-template
                     , rosezipper
                     , shakespeare-text
