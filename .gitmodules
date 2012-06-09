@@ -10,3 +10,6 @@
 [submodule "modules/Modernizr"]
 	path = modules/Modernizr
 	url = https://github.com/Modernizr/Modernizr.git
+[submodule "modules/batman"]
+	path = modules/batman
+	url = https://github.com/Shopify/batman.git
