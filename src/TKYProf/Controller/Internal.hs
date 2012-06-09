@@ -58,7 +58,7 @@ instance Yesod TKYProf where
           -- Copied from Yesod.Core
           r <- waiRequest
           let path = TE.decodeUtf8With TEE.lenientDecode $ W.rawPathInfo r
-          jsonToRepJson $ A.object [ "message" .= A.toJSON ("Path " <> path <> " is not found.")]
+          jsonToRepJson $ A.object ["message" .= A.toJSON ("Path " <> path <> " is not found.")]
         PermissionDenied mesg -> do
           jsonToRepJson $ A.object ["message" .= mesg]
         InvalidArgs args -> do
