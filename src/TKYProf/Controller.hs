@@ -17,4 +17,4 @@ import TKYProf.Controller.TimeAllocReport as X
 import TKYProf.Controller.HeapReport as X
 import TKYProf.Controller.EventReport as X
 
-mkYesodDispatch "TKYProf" $(parseRoutesFile "config/routes2")
+mkYesodDispatch "TKYProf" resourcesTKYProf
