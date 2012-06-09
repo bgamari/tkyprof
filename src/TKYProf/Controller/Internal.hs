@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -15,9 +16,10 @@ import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Encoding.Error as TEE
 
 import Control.Exception.Lifted (SomeException, try, throwIO)
-import Data.Aeson ((.=))
+import Data.Aeson (FromJSON, (.=))
 import qualified Data.Aeson as A
 import qualified Data.Attoparsec.Text as AT
+import qualified Data.Conduit.Attoparsec as CA
 import Database.Persist.GenericSql (ConnectionPool, SqlPersist, runSqlPool)
 import qualified Network.Wai as W
 import Text.Hamlet (hamletFile)
@@ -26,6 +28,7 @@ import Yesod.Core
 import Yesod.Default.Config (AppConfig(..), DefaultEnv)
 import Yesod.Default.Util (addStaticContentExternal)
 import Yesod.Json (jsonToRepJson)
+import qualified Yesod.Json as YJ
 import Yesod.Logger (Logger, logLazyText)
 import Yesod.Persist
 import Yesod.Static (Static, Route(StaticRoute), base64md5)
@@ -130,3 +133,13 @@ removePrefix prefix = lower . (fromMaybe <*> stripPrefix prefix)
     lower :: String -> String
     lower []     = []
     lower (x:xs) = toLower x:xs
+
+parseJsonBody :: FromJSON a => GHandler sub master a
+parseJsonBody = do
+  r <- try YJ.parseJsonBody_
+  case r of
+    Left (err@CA.ParseError {}) -> do
+      invalidArgs [T.pack $ CA.errorMessage err]
+    Left CA.DivergentParser -> do
+      invalidArgs ["Divergent parser"]
+    Right x -> return x
