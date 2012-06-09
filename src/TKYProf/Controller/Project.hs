@@ -28,7 +28,7 @@ postProjectsR = do
   jsonToRepJson project
 
 getProjectIdR :: ProjectId -> Handler RepJson
-getProjectIdR = undefined
+getProjectIdR pid = runDB (Proj.get pid) >>= jsonToRepJson
 
 deleteProjectIdR :: ProjectId -> Handler RepJson
 deleteProjectIdR = undefined
