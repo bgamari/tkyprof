@@ -1,7 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module TKYProf.Controller.Project where
 import Data.Aeson.TH (deriveJSON)
+import Network.HTTP.Types (noContent204)
 import Yesod.Content (RepJson)
+import Yesod.Handler (sendResponseStatus)
 import Yesod.Json (jsonToRepJson, parseJsonBody_)
 import Yesod.Persist (runDB)
 
@@ -30,5 +32,7 @@ postProjectsR = do
 getProjectIdR :: ProjectId -> Handler RepJson
 getProjectIdR pid = runDB (Proj.get pid) >>= jsonToRepJson
 
-deleteProjectIdR :: ProjectId -> Handler RepJson
-deleteProjectIdR = undefined
+deleteProjectIdR :: ProjectId -> Handler ()
+deleteProjectIdR pid = do
+  runDB $ Proj.delete pid
+  sendResponseStatus noContent204 ()
