@@ -7,8 +7,8 @@ import TKYProf.Controller.Internal
 import TKYProf.Model
 
 getProjectsR :: Handler RepJson
-getProjectsR = do
-  projects <- runDB $ selectList [] []
+getProjectsR = pagenator 0 20 $ \pagenate -> do
+  projects <- runDB $ selectList [] (pagenate [])
   jsonToRepJson (projects :: [Entity Project])
 
 postProjectsR :: Handler RepJson
