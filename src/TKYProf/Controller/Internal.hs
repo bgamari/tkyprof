@@ -3,7 +3,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 module TKYProf.Controller.Internal where
-import Control.Applicative ((<$>))
+import Control.Applicative ((<$>), (<*>))
+import Data.Char (toLower)
+import Data.List (stripPrefix)
 import Data.Maybe (fromMaybe)
 
 import qualified Data.Attoparsec.Text as AT
@@ -79,3 +81,10 @@ pagenator defOffset defLimit f = do
     parseInt :: Text -> Maybe Int
     parseInt = either (const Nothing) Just
              . AT.parseOnly AT.decimal
+
+removePrefix :: String -> String -> String
+removePrefix prefix = lower . (fromMaybe <*> stripPrefix prefix)
+  where
+    lower :: String -> String
+    lower []     = []
+    lower (x:xs) = toLower x:xs
