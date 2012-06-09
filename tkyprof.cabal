@@ -82,6 +82,7 @@ library
                     , hamlet
                     , hjsmin
                     , http-types
+                    , lifted-base
                     , mtl
                     , persistent
                     , persistent-sqlite
@@ -115,6 +116,9 @@ executable tkyprof
   hs-source-dirs:     bin
   build-depends:      base
                     , tkyprof
+                    , wai-extra
+                    , warp
+                    , yesod-core
                     , yesod-default
 
 executable prof2json
