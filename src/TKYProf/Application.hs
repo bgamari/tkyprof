@@ -22,7 +22,7 @@ import qualified Settings as S
 makeApplication :: AppConfig DefaultEnv () -> Logger -> IO Application
 makeApplication config logger = do
   st <- static S.staticDir
-  withSqlitePool ":memory:" 1 $ \pool -> do
+  withSqlitePool "tkyprof.db" 10 $ \pool -> do
     runSqlPool (runMigration migrateAll) pool
     toWaiApp TKYProf { tkyConfig   = config
                      , tkyLogger   = logger
