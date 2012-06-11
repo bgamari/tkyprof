@@ -7,6 +7,7 @@ $doctype 5
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
     <script src=@{StaticR js_batman_js}>
     <script src=@{StaticR js_batman_jquery_js}>
+    <script src=@{StaticR js_batman_paginator_js}>
     <title>TKYProf
   <body>
     <div data-yield=main>

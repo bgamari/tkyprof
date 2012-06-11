@@ -1,7 +1,9 @@
 Batman.config.usePushState = false
 
 class TKYProf extends Batman.App
-  @global true
+
+class TKYProf.HomeController extends Batman.Controller
+  projects:
 
 class TKYProf.RestStorage extends Batman.RestStorage
   serializeAsForm: false
@@ -14,3 +16,5 @@ class TKYProf.Project extends Batman.Model
 
 class TKYProf.ProjectPaginator extends Batman.ModelPaginator
   model: TKYProf.Project
+
+window.TKYProf = TKYProf

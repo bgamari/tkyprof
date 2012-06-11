@@ -1,0 +1,1 @@
+../../modules/batman/lib/extras/batman.paginator.js
