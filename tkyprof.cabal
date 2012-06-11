@@ -29,9 +29,11 @@ data-files:           static/js/d3.layout.min.js
                       README.markdown
 
 extra-source-files:   config/routes
-                      hamlet/*.hamlet
-                      julius/*.julius
-                      lucius/*.lucius
+                      config/routes2
+                      config/models
+                      templates/*.hamlet
+                      templates/*.coffee
+                      templates/*.lucius
 
 flag production
   description:        Build the production executable.
@@ -88,6 +90,7 @@ library
                     , persistent-sqlite
                     , persistent-template
                     , rosezipper
+                    , shakespeare-js
                     , shakespeare-text
                     , stm
                     , template-haskell

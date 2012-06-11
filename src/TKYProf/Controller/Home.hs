@@ -1,6 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 module TKYProf.Controller.Home where
-import Yesod.Content
+import Text.Coffee (coffeeFile)
 import Yesod.Core
 
-getHomeR :: GHandler master sub RepHtml
-getHomeR = undefined
+import TKYProf.Controller.Internal
+
+getHomeR :: Handler RepHtml
+getHomeR = do
+  defaultLayout $ do
+    toWidget $(coffeeFile "templates/tkyprof.coffee")

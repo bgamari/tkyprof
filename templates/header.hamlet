@@ -6,8 +6,3 @@
         TKYPr
         <span #o>o
         f
-    $forall bc <- bcs
-      <a href=@{fst bc}>#{snd bc}
-      <span .breadcrumbs-delimiter>>
-    #{title}
-

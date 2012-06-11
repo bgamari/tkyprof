@@ -77,10 +77,8 @@ instance Yesod TKYProf where
             ["message" .= A.toJSON ("Method " <> method <> " is not supported.")]
 
   defaultLayout widget = do
-    mmsg <- getMessage
-    (title, bcs) <- breadcrumbs
+    liftIO $ putStrLn "foo"
     pc <- widgetToPageContent $ do
-      -- $(widgetFile "normalize")
       $(widgetFile "header")
       $(widgetFile "default-layout")
     hamletToRepHtml $(hamletFile "templates/default-layout-wrapper.hamlet")
