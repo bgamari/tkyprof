@@ -34,6 +34,7 @@ instance ToJSON (Entity Project) where
     A.object [ "id"        .= key
              , "name"      .= projectName
              , "createdAt" .= projectCreatedAt
+             , "updatedAt" .= projectUpdatedAt
              ]
 
 instance ToJSON (Entity TimeAllocReport) where

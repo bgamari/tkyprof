@@ -17,6 +17,12 @@ create name = do
   let project = Project
         { projectName      = name
         , projectCreatedAt = createdAt
+        , projectUpdatedAt = createdAt
         }
   pid <- insert project
   return $ Entity pid project
+
+touch :: (MonadIO (b m), PersistQuery b m) => Key b Project -> b m ()
+touch pid = do
+    updatedAt <- liftIO getCurrentTime
+    update pid [ ProjectUpdatedAt =. updatedAt ]

@@ -1,6 +1,7 @@
 Project sql=projects json
   name      Text
   createdAt UTCTime
+  updatedAt UTCTime
 
 TimeAllocReport sql=time_alloc_reports json
   projectId   ProjectId
