@@ -46,18 +46,12 @@ flag devel
 library
   ghc-options:        -Wall -threaded
 
-  exposed-modules:    Application
-                      Settings
-                      TKYProf.Application
+  exposed-modules:    TKYProf.Application
 
   hs-source-dirs:     src
-  other-modules:      Foundation
-                      Handler.Home
-                      Handler.Reports
-                      Handler.Reports.Helpers
-                      Model
-                      Paths_tkyprof
+  other-modules:      Paths_tkyprof
                       ProfilingReport
+                      Settings
                       Settings.StaticFiles
                       Paths_tkyprof
                       TKYProf.Model.Internal
