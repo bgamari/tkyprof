@@ -4,3 +4,5 @@ client_session_key.aes
 static/tmp/
 .static-cache
 /cabal-dev/
+*.db
+*~
