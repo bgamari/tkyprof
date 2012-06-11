@@ -12,8 +12,8 @@ import TKYProf.Model
 import qualified TKYProf.Model.Project as Proj
 
 getProjectsR :: Handler RepJson
-getProjectsR = pagenator 0 20 $ \pagenate -> do
-  projects <- runDB $ Proj.selectList [] (pagenate [Desc ProjectUpdatedAt])
+getProjectsR = paginator 0 20 $ \paginate -> do
+  projects <- runDB $ Proj.selectList [] (paginate [Desc ProjectUpdatedAt])
   jsonToRepJson (projects :: [Entity Project])
 
 newtype PostProject = PostProject

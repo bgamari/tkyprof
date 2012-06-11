@@ -111,12 +111,12 @@ instance YesodPersist TKYProf where
         throwIO e
       Right x -> return x
 
-pagenator
+paginator
   :: Int
   -> Int
   -> (([SelectOpt v] -> [SelectOpt v]) -> GHandler master sub a)
   -> GHandler master sub a
-pagenator defOffset defLimit f = do
+paginator defOffset defLimit f = do
   offset <- fromMaybe defOffset . (>>= parseInt) <$> lookupGetParam "offset"
   limit <- fromMaybe defLimit . (>>= parseInt) <$> lookupGetParam "limit"
   f ([OffsetBy offset, LimitTo limit] ++)
