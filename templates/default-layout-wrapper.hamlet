@@ -10,5 +10,4 @@ $doctype 5
     <script src=@{StaticR js_batman_paginator_js}>
     <title>TKYProf
   <body>
-    <div data-yield=main>
     ^{pageBody pc}
