@@ -15,7 +15,8 @@ class TKYProf.HomeController extends Batman.Controller
     console.log "before"
     page = @get('projects.page')
     console.log "page: #{page}"
-    @set 'currentProjects', @get('projects.toArray')
+    @get('projects').toArray (projects) =>
+      @set 'currentProjects', projects
     console.log "after"
 
 class TKYProf.RestStorage extends Batman.RestStorage
@@ -28,7 +29,19 @@ class TKYProf.Project extends Batman.Model
   @resourceName: 'project'
   @url = 'projects'
 
-class TKYProf.ProjectPaginator extends Batman.ModelPaginator
+class TKYProf.ModelPaginator extends Batman.ModelPaginator
+  toArray: (callback) ->
+    cache = @get('cache')
+    offset = @get('offset')
+    limit = @get('limit')
+    if cache?.coversOffsetAndLimit(offset, limit)
+      callback(cache.itemsForOffsetAndLimit(offset, limit) or [])
+    else
+      @observe 'cache', (newCache) ->
+        callback(newCache.itemsForOffsetAndLimit(offset, limit) or [])
+      @_load(offset, limit)
+
+class TKYProf.ProjectPaginator extends TKYProf.ModelPaginator
   model: TKYProf.Project
   limit: 20
 
