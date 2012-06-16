@@ -1,7 +1,7 @@
 <div #header>
   <nav #breadcrumbs>
     <h1>
-      <a href=@{HomeR}>
+      <a data-route='/'>
         <img #logo src=@{StaticR images_tkyprof_logo_orange_png} alt="Home">
         TKYPr
         <span #o>o
