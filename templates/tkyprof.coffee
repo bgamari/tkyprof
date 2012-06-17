@@ -1,7 +1,7 @@
 Batman.config.usePushState = false
 
 class TKYProf extends Batman.App
-  @root 'home#all'
+  @root 'home#index'
 
 class TKYProf.HomeController extends Batman.Controller
   routingKey: 'home'
@@ -10,14 +10,9 @@ class TKYProf.HomeController extends Batman.Controller
     super
     @set 'projects', new TKYProf.ProjectPaginator
 
-  all: ->
-    TKYProf.Project.load
-    console.log "before"
-    page = @get('projects.page')
-    console.log "page: #{page}"
+  index: ->
     @get('projects').toArray (projects) =>
       @set 'currentProjects', projects
-    console.log "after"
 
 class TKYProf.RestStorage extends Batman.RestStorage
   serializeAsForm: false

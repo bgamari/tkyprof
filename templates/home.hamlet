@@ -1,5 +1,5 @@
 <div data-yield=main>
-<div data-defineview=home/all>
+<div data-defineview=home/index>
   <a data-route='/projects'>Projects
   <ul>
     <li data-foreach-project=currentProjects
