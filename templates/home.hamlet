@@ -1,6 +1,13 @@
 <div data-yield=main>
 <div data-defineview=home/index>
+  <h1>Home
   <a data-route='/projects'>Projects
+  <ul>
+    <li data-foreach-project=currentProjects
+        data-source=project.name>
+<div data-defineview=projects/index>
+  <h1>Projects
+  <a data-route='/'>Home
   <ul>
     <li data-foreach-project=currentProjects
         data-source=project.name>
