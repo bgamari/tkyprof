@@ -48,6 +48,26 @@ class TKYProf.Project extends Batman.Model
   @encode 'name', 'createdAt', 'updatedAt'
   @persist TKYProf.RestStorage
   @url = 'projects'
+  @hasMany 'timeAllocReports'
+  @hasMany 'heapReports'
+  @hasMany 'eventReports'
+
+class TKYProf.BaseReport extends Batman.Model
+  @encode 'projectId', 'commandLine', 'rawData', 'createdAt'
+  @persist TKYProf.RestStorage
+  @belongsTo 'project'
+
+class TKYProf.TimeAllocReport extends TKYProf.BaseReport
+  @resourceName: 'timeAllocReport'
+  @url = 'timealloc'
+
+class TKYProf.HeapReport extends TKYProf.BaseReport
+  @resourceName: 'heapReport'
+  @url = 'heap'
+
+class TKYProf.EventReport extends TKYProf.BaseReport
+  @resourceName: 'eventReport'
+  @url = 'event'
 
 # Paginators
 
