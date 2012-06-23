@@ -17,3 +17,9 @@
            data-source=project.name>
     <a data-event-click=projectsView.nextPage>
       Load more
+
+<div data-defineview=projects/show>
+  <div data-source=currentProject.id>
+  <div data-source=currentProject.name>
+  <div data-source=currentProject.createdAt>
+  <div data-source=currentProject.updatedAt>
