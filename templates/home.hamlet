@@ -1,4 +1,5 @@
-<div data-yield=main>
+<section data-yield=main>
+
 <div data-defineview=home/index>
   <h1>Home
   <a data-route='/projects'>Projects
