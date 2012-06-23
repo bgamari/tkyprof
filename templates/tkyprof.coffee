@@ -54,6 +54,10 @@ class TKYProf.Project extends Batman.Model
 # Paginators
 
 class TKYProf.ModelPaginator extends Batman.ModelPaginator
+  constructor: ->
+    super
+    @set 'loading', false
+
   toArray: (callback) ->
     cache = @get('cache')
     offset = @get('offset')
@@ -63,6 +67,8 @@ class TKYProf.ModelPaginator extends Batman.ModelPaginator
     else
       @observe 'cache', (newCache) ->
         callback(newCache.itemsForOffsetAndLimit(offset, limit) or [])
+        @set 'loading', false
+      @set 'loading', true
       @_load(offset, limit)
 
 class TKYProf.ProjectPaginator extends TKYProf.ModelPaginator
@@ -84,6 +90,7 @@ class TKYProf.PaginatedView extends Batman.View
 
   loadOnScroll: =>
     console.log "autoLoad"
+    return if @get 'paginator.loading'
     node = $(@get 'node')
     nodeBottom = node.offset().top + node.height()
     windowBottom = $(window).scrollTop() + $(window).height()
