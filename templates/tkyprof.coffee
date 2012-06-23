@@ -26,6 +26,7 @@ class TKYProf.ProjectsController extends Batman.Controller
     @set 'projectsView', new TKYProf.PaginatedView
       paginator: new TKYProf.ProjectPaginator
         limit: 50
+      autoLoad: true
 
   index: (params) ->
     console.log "TKYProf.ProjectsController#index"
@@ -76,10 +77,19 @@ class TKYProf.PaginatedView extends Batman.View
     @set 'currentItems', new Batman.Set
 
   render: ->
-    @feedItems()
+    @loadItems()
+    if @get 'autoLoad'
+      $(window).scroll @loadOnScroll
     super
 
-  feedItems: ->
+  loadOnScroll: =>
+    console.log "autoLoad"
+    node = $(@get 'node')
+    nodeBottom = node.offset().top + node.height()
+    windowBottom = $(window).scrollTop() + $(window).height()
+    @nextPage() if nodeBottom < windowBottom
+
+  loadItems: ->
     @get('paginator').toArray (newItems) =>
       currentItems = @get('currentItems')
       newItems.forEach (item) ->
@@ -87,7 +97,7 @@ class TKYProf.PaginatedView extends Batman.View
 
   nextPage: ->
     @get('paginator').nextPage()
-    @feedItems()
+    @loadItems()
 
 # main
 
