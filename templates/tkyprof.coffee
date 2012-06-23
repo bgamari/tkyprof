@@ -4,7 +4,7 @@ Batman.config.usePushState = false
 
 class TKYProf extends Batman.App
   @root 'home#index'
-  @route '/projects', 'projects#index'
+  @resources 'projects'
 
 class TKYProf.HomeController extends Batman.Controller
   routingKey: 'home'
@@ -32,8 +32,13 @@ class TKYProf.ProjectsController extends Batman.Controller
     console.log "TKYProf.ProjectsController#index"
     @render source: 'projects/index'
 
-  show: ->
-    console.log 'show'
+  show: (params) ->
+    TKYProf.Project.find params.id, (err, project) =>
+      console.log err if err
+      console.log project.toJSON()
+      @set 'currentProject', project
+    @render source: 'projects/show'
+
 class TKYProf.RestStorage extends Batman.RestStorage
   serializeAsForm: false
   recordJsonNamespace: -> null
