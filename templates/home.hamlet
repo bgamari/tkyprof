@@ -5,9 +5,14 @@
   <ul>
     <li data-foreach-project=currentProjects
         data-source=project.name>
+
 <div data-defineview=projects/index>
-  <h1>Projects
-  <a data-route='/'>Home
-  <ul>
-    <li data-foreach-project=currentProjects
-        data-source=project.name>
+  <div data-view=projectsView>
+    <h1>Projects
+    <a data-route='/'>Home
+    <ul>
+      <li data-foreach-project=projectsView.currentItems>
+        <a data-route=project
+           data-source=project.name>
+    <a data-event-click=projectsView.nextPage>
+      Load more
