@@ -22,11 +22,14 @@ class TKYProf.ProjectsController extends Batman.Controller
 
   constructor: ->
     super
-    @set 'projects', new TKYProf.ProjectPaginator
+    paginator = new TKYProf.ProjectPaginator
+    @set 'projects', paginator
+    # paginated view for projects
+    @set 'projectsView', new TKYProf.PaginatedView
+      paginator: paginator
 
-  index: ->
-    @get('projects').toArray (projects) =>
-      @set 'currentProjects', projects
+  index: (params) ->
+    console.log "TKYProf.ProjectsController#index"
     @render source: 'projects/index'
 
   show: ->
@@ -40,6 +43,8 @@ class TKYProf.Project extends Batman.Model
   @persist TKYProf.RestStorage
   @resourceName: 'project'
   @url = 'projects'
+
+# Paginators
 
 class TKYProf.ModelPaginator extends Batman.ModelPaginator
   toArray: (callback) ->
@@ -56,6 +61,27 @@ class TKYProf.ModelPaginator extends Batman.ModelPaginator
 class TKYProf.ProjectPaginator extends TKYProf.ModelPaginator
   model: TKYProf.Project
   limit: 20
+
+# Views
+
+class TKYProf.PaginatedView extends Batman.View
+  constructor: ->
+    super
+    @set 'currentItems', new Batman.Set
+
+  render: ->
+    @feedItems()
+    super
+
+  feedItems: ->
+    @get('paginator').toArray (newItems) =>
+      currentItems = @get('currentItems')
+      newItems.forEach (item) ->
+        currentItems.add item
+
+  nextPage: ->
+    @get('paginator').nextPage()
+    @feedItems()
 
 window.TKYProf = TKYProf
 TKYProf.run()
