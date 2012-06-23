@@ -22,11 +22,10 @@ class TKYProf.ProjectsController extends Batman.Controller
 
   constructor: ->
     super
-    paginator = new TKYProf.ProjectPaginator
-    @set 'projects', paginator
     # paginated view for projects
     @set 'projectsView', new TKYProf.PaginatedView
-      paginator: paginator
+      paginator: new TKYProf.ProjectPaginator
+        limit: 50
 
   index: (params) ->
     console.log "TKYProf.ProjectsController#index"
