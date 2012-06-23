@@ -29,13 +29,11 @@ class TKYProf.ProjectsController extends Batman.Controller
       autoLoad: true
 
   index: (params) ->
-    console.log "TKYProf.ProjectsController#index"
     @render source: 'projects/index'
 
   show: (params) ->
     TKYProf.Project.find params.id, (err, project) =>
       console.log err if err
-      console.log project.toJSON()
       @set 'currentProject', project
     @render source: 'projects/show'
 
@@ -89,7 +87,6 @@ class TKYProf.PaginatedView extends Batman.View
     super
 
   loadOnScroll: =>
-    console.log "autoLoad"
     return if @get 'paginator.loading'
     node = $(@get 'node')
     nodeBottom = node.offset().top + node.height()
