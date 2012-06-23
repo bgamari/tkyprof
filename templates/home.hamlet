@@ -15,8 +15,12 @@
       <li data-foreach-project=projectsView.currentItems>
         <a data-route=project
            data-source=project.name>
-    <a data-event-click=projectsView.nextPage>
-      Load more
+    <button data-event-click=projectsView.nextPage
+            data-bind-disabled=projectsView.paginator.loading>
+      <span data-hideif=projectsView.paginator.loading>
+        Load more
+      <span data-showif=projectsView.paginator.loading>
+        Loading...
 
 <div data-defineview=projects/show>
   <div data-source=currentProject.id>
