@@ -39,14 +39,16 @@ class TKYProf.ProjectsController extends Batman.Controller
       @set 'currentProject', project
     @render source: 'projects/show'
 
+# Models
+
 class TKYProf.RestStorage extends Batman.RestStorage
   serializeAsForm: false
   recordJsonNamespace: -> null
 
 class TKYProf.Project extends Batman.Model
+  @resourceName: 'project'
   @encode 'name', 'createdAt', 'updatedAt'
   @persist TKYProf.RestStorage
-  @resourceName: 'project'
   @url = 'projects'
 
 # Paginators
@@ -87,6 +89,8 @@ class TKYProf.PaginatedView extends Batman.View
   nextPage: ->
     @get('paginator').nextPage()
     @feedItems()
+
+# main
 
 window.TKYProf = TKYProf
 TKYProf.run()
