@@ -103,10 +103,10 @@ class TKYProf.PaginatedView extends Batman.View
   render: ->
     @loadItems()
     if @get 'autoLoad'
-      $(window).scroll @loadOnScroll
+      $(window).scroll @loadAtBottom
     super
 
-  loadOnScroll: =>
+  loadAtBottom: =>
     return if @get 'paginator.loading'
     node = $(@get 'node')
     nodeBottom = node.offset().top + node.height()
