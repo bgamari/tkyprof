@@ -1,7 +1,9 @@
 {-# LANGUAGE TemplateHaskell #-}
 module TKYProf.Controller.TimeAllocReport where
 import Data.Aeson.TH (deriveJSON)
+import Network.HTTP.Types (noContent204)
 import Yesod.Content (RepJson)
+import Yesod.Handler (sendResponseStatus)
 import Yesod.Json (jsonToRepJson)
 import Yesod.Persist (runDB)
 
@@ -27,4 +29,6 @@ getTimeAllocReportIdR _projectId reportId =
   runDB (Report.get reportId) >>= jsonToRepJson
 
 deleteTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> Handler RepJson
-deleteTimeAllocReportIdR = undefined
+deleteTimeAllocReportIdR _projectId reportId = do
+  runDB $ Report.delete reportId
+  sendResponseStatus noContent204 ()
