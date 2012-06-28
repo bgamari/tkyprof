@@ -23,7 +23,8 @@ postTimeAllocReportsR projectId = do
   jsonToRepJson report
 
 getTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> Handler RepJson
-getTimeAllocReportIdR = undefined
+getTimeAllocReportIdR _projectId reportId =
+  runDB (Report.get reportId) >>= jsonToRepJson
 
 deleteTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> Handler RepJson
 deleteTimeAllocReportIdR = undefined
