@@ -1,11 +1,26 @@
+{-# LANGUAGE TemplateHaskell #-}
 module TKYProf.Controller.TimeAllocReport where
-import Yesod.Content
+import Data.Aeson.TH (deriveJSON)
+import Yesod.Content (RepJson)
+import Yesod.Json (jsonToRepJson)
+import Yesod.Persist (runDB)
 
 import TKYProf.Controller.Internal
 import TKYProf.Model
+import qualified TKYProf.Model.TimeAllocReport as Report
+
+data PostReport = PostReport
+  { postReportCommandLine :: Text
+  , postReportRawData     :: ByteString
+  }
+
+$(deriveJSON (removePrefix "postReport") ''PostReport)
 
 postTimeAllocReportsR :: ProjectId -> Handler RepJson
-postTimeAllocReportsR = undefined
+postTimeAllocReportsR projectId = do
+  PostReport commandLine rawData <- parseJsonBody
+  report <- runDB $ Report.create projectId commandLine rawData
+  jsonToRepJson report
 
 getTimeAllocReportIdR :: ProjectId -> TimeAllocReportId -> Handler RepJson
 getTimeAllocReportIdR = undefined
