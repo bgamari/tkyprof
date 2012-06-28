@@ -75,6 +75,7 @@ library
                     , clientsession
                     , conduit
                     , containers
+                    , directory
                     , hamlet
                     , hjsmin
                     , http-types
