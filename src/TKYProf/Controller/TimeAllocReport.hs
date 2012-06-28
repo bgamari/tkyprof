@@ -11,6 +11,13 @@ import TKYProf.Controller.Internal
 import TKYProf.Model
 import qualified TKYProf.Model.TimeAllocReport as Report
 
+getTimeAllocReportsR :: ProjectId -> Handler RepJson
+getTimeAllocReportsR projectId = paginator 0 20 $ \paginate -> do
+  reports <- runDB $ Report.selectList
+    [TimeAllocReportProjectId ==. projectId]
+    (paginate [Desc TimeAllocReportCreatedAt])
+  jsonToRepJson reports
+
 data PostReport = PostReport
   { postReportCommandLine :: Text
   , postReportRawData     :: ByteString

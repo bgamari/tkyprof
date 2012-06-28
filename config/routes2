@@ -5,9 +5,9 @@
 /                                             HomeR              GET
 /projects                                     ProjectsR          GET POST
 /projects/#ProjectId                          ProjectIdR         GET DELETE
-/projects/#ProjectId/times                    TimeAllocReportsR  POST
+/projects/#ProjectId/times                    TimeAllocReportsR  GET POST
 /projects/#ProjectId/times/#TimeAllocReportId TimeAllocReportIdR GET DELETE
-/projects/#ProjectId/heaps                    HeapReportsR       POST
+/projects/#ProjectId/heaps                    HeapReportsR       GET POST
 /projects/#ProjectId/heaps/#HeapReportId      HeapReportIdR      GET DELETE
-/projects/#ProjectId/events                   EventReportsR      POST
+/projects/#ProjectId/events                   EventReportsR      GET POST
 /projects/#ProjectId/events/#EventReportId    EventReportIdR     GET DELETE

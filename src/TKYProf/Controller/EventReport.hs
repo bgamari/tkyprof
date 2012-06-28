@@ -4,6 +4,9 @@ import Yesod.Content
 import TKYProf.Controller.Internal
 import TKYProf.Model
 
+getEventReportsR :: ProjectId -> Handler RepJson
+getEventReportsR = undefined
+
 postEventReportsR :: ProjectId -> Handler RepJson
 postEventReportsR = undefined
 

@@ -4,6 +4,9 @@ import Yesod.Content
 import TKYProf.Controller.Internal
 import TKYProf.Model
 
+getHeapReportsR :: ProjectId -> Handler RepJson
+getHeapReportsR = undefined
+
 postHeapReportsR :: ProjectId -> Handler RepJson
 postHeapReportsR = undefined
 
