@@ -237,7 +237,7 @@ instance ToJSON ProfilingReport where
            , "totalTime"      .= reportTotalTime
            , "totalAlloc"     .= reportTotalAlloc
            , "hotCostCentres" .= reportHotCostCentres
-           , "costCentres"    .= reportCostCentres
+           , "costCentres"    .= CostCentreTree reportCostCentres
            ]
 
 instance ToJSON TotalTime where
@@ -259,8 +259,10 @@ instance ToJSON BriefCostCentre where
            , "alloc"  .= briefCostCentreAlloc
            ]
 
-instance ToJSON (Tree CostCentre) where
-  toJSON (Node cc@(CostCentre {..}) subForest)
+newtype CostCentreTree = CostCentreTree (Tree CostCentre)
+
+instance ToJSON CostCentreTree where
+  toJSON (CostCentreTree (Node cc@(CostCentre {..}) subForest))
     | null subForest = cc'
     | otherwise      = branch
     where
